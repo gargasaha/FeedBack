@@ -1,0 +1,89 @@
+@model FeedBack.Models.FB;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <h1 class="text-center mb-4">📋 Feedback Form</h1>
+                    
+                    <form id="feedbackForm" asp-controller="Home" asp-action="FeedBack" method="post">
+                        <div class="mb-4">
+                            <label for="name" class="form-label fw-bold">Name</label>
+                            <input type="text" asp-for="Name" class="form-control form-control-lg" id="name" placeholder="Enter your name" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="email" class="form-label fw-bold">Email</label>
+                            <input type="email" asp-for="Email" class="form-control form-control-lg" id="email" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="message" class="form-label fw-bold">Your Feedback</label>
+                            <textarea asp-for="Fb" class="form-control form-control-lg" id="message" rows="4" placeholder="Share your thoughts and feedback..." required></textarea>
+                        </div>
+
+                        <label class="form-label fw-bold d-block mb-3">How was your experience?</label>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-success btn-lg feedback-btn" data-rating="awesome">
+                                😍 Awesome
+                            </button>
+                            <button type="button" class="btn btn-outline-info btn-lg feedback-btn" data-rating="good">
+                                😊 Good
+                            </button>
+                            <button type="button" class="btn btn-outline-warning btn-lg feedback-btn" data-rating="average">
+                                😐 Average
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-lg feedback-btn" data-rating="bad">
+                                😞 Bad
+                            </button>
+                        </div>
+                        <input type="hidden" asp-for="Emojivalue" id="hiddenEmojiValue" />
+                        <div class="mt-4">
+                            <p class="text-center fs-5">Selected: <span id="selectedRating" class="badge bg-secondary">None</span></p>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">Submit Feedback</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedRating = null;
+
+    document.querySelectorAll('.feedback-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedRating = this.dataset.rating;
+            document.getElementById('selectedRating').textContent = selectedRating.toUpperCase();
+            if(selectedRating.toUpperCase()=='AWESOME'){
+                document.getElementById('hiddenEmojiValue').value = 1;
+            } 
+            else if(selectedRating.toUpperCase()=='GOOD'){
+                document.getElementById('hiddenEmojiValue').value = 2;
+            } 
+            else if(selectedRating.toUpperCase()=='AVERAGE'){
+                document.getElementById('hiddenEmojiValue').value = 3;
+            } 
+            else if(selectedRating.toUpperCase()=='BAD'){
+                document.getElementById('hiddenEmojiValue').value = 4;
+            }
+        });
+    });
+</script>
+
+<style>
+    .feedback-btn.active {
+        color: white !important;
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+    }
+</style>
