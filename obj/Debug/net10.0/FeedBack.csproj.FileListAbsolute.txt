@@ -134,3 +134,4 @@ C:\Users\sahag\OneDrive\Desktop\c#\FeedBack\FeedBack\bin\Debug\net10.0\runtimes\
 C:\Users\sahag\OneDrive\Desktop\c#\FeedBack\FeedBack\bin\Debug\net10.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\sahag\OneDrive\Desktop\c#\FeedBack\FeedBack\bin\Debug\net10.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\sahag\OneDrive\Desktop\c#\FeedBack\FeedBack\obj\Debug\net10.0\FeedBack.csproj.Up2Date
+C:\Users\sahag\OneDrive\Desktop\c#\FeedBack\FeedBack\obj\Debug\net10.0\FeedBack.sourcelink.json

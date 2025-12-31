@@ -1,11 +1,21 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using FeedBack.Models;
+using FeedBack.Services;
 
 namespace FeedBack.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly ILogger<HomeController> _logger;
+    private FBService fBService;
+    public HomeController(ILogger<HomeController> logger)
+    {
+        fBService = new FBService(new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build());
+        _logger = logger;
+    }
     public IActionResult Index()
     {
         return View();
@@ -17,10 +27,10 @@ public class HomeController : Controller
         return View();
     }
     [HttpPost]
-    public IActionResult FeedBack(Models.FB obj)
+    public async Task<IActionResult> FeedBack(Models.FB obj)
     {
-        Console.WriteLine(obj.Name+" "+obj.Email+" "+obj.Fb+" "+obj.Emojivalue);
-        
+        bool f=await fBService.SaveFeedback(obj);
+        Console.WriteLine(f);
         return RedirectToAction("FeedBack");
     }
     public IActionResult Privacy()

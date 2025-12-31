@@ -17,7 +17,5 @@ namespace FeedBack.Models
         [NotNull]
         public int ?Emojivalue { get; set; }
 
-        [Required]
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }
