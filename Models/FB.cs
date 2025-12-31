@@ -15,7 +15,7 @@ namespace FeedBack.Models
         public string ?Fb { get; set; }
  
         [NotNull]
-        public int ?Emojivalue { get; set; }
+        public string ?Emojivalue { get; set; }
 
     }
 }

@@ -42,5 +42,33 @@ namespace FeedBack.Services
             }
             return true;
         }
+        public async Task<List<Models.FB>> getFeedbackByYear(string year)
+        {
+            List<Models.FB> feedbacks = new List<Models.FB>();
+            string query = "SELECT * FROM [FeedBack].[dbo].[FB] WHERE YEAR(CreatedDate) = @Year ORDER BY CreatedDate DESC";
+            _command=new SqlCommand(query,_connection);
+            _command.Parameters.AddWithValue("@Year", year);
+            try
+            {
+                sqlDataReader=_command.ExecuteReaderAsync().Result;
+                while(sqlDataReader.Read())
+                {
+                    Models.FB fb = new Models.FB
+                    {
+                        Name = sqlDataReader["Name"] as string,
+                        Email = sqlDataReader["Email"] as string,
+                        Fb = sqlDataReader["Fb"] as string,
+                        Emojivalue = sqlDataReader["Emojivalue"] as string,
+                    };
+                    feedbacks.Add(fb);
+                }
+                sqlDataReader.Close();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error retrieving feedback: " + ex.Message);
+            }
+            return feedbacks;
+        }
     }
 }

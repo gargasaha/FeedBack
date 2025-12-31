@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "Show";
+}
+@if(Convert.ToInt32(ViewData["Mode"])==1){
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+            <form asp-controller="Home" asp-action="ListFeedback" method="post" class="d-flex align-items-end gap-3">
+                <div class="flex-grow-1">
+                    <label for="yearSelect" class="form-label fw-semibold text-muted mb-2">
+                        <i class="bi bi-calendar-event"></i> Select Year
+                    </label>
+                    <select id="yearSelect" name="year" class="form-select form-select-lg border-2">
+                        @for(var i=DateTime.Now.Year-10;i<=DateTime.Now.Year+10;++i){
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-funnel"></i> Filter
+                </button>
+            </form>
+        </div>
+    </div>
+}
+else{
+    <h2>Show Feedback Page</h2>
+    <div id="feedbackContainer" style="max-height: 600px; overflow-y: auto; padding-right: 10px">
+        <!-- Feedback entries will be dynamically loaded here -->
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function fetchFeedbacks() {
+            $.ajax({
+                type: "GET",
+                url: "/Home/GetFeedbacks",
+                data: { year: "@ViewData["Year"]" },
+                success: function (data) {
+                    console.log(data);
+                    $('#feedbackContainer').html('');
+                    data.forEach(function (fb) { 
+                        var feedbackEntry = '';
+                        if(fb.emojivalue=="1"){
+                            feedbackEntry = `
+                            <div class="card mb-3 shadow-lg" style="border-radius: 15px; border-left: 5px solid #28a745; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); position: relative; overflow: hidden;">
+                                <div style="position: absolute; top: -10px; left: 20%; font-size: 2rem; opacity: 0.3;">🎉</div>
+                                <div style="position: absolute; bottom: -10px; right: 15%; font-size: 2.5rem; opacity: 0.3;">✨</div>
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title text-success fw-bold">${fb.name}</h5>
+                                    <p class="card-text text-muted">${fb.fb.substring(0, 20)}...</p>
+                                    <small class="text-success"><i class="bi bi-hand-thumbs-up-fill"></i> Positive Feedback</small>
+                                </div>
+                            </div>
+                            `;
+                        }
+                        else if(fb.emojivalue=="2"){
+                            feedbackEntry = `
+                            <div class="card mb-3 shadow-lg" style="border-radius: 15px; border-left: 5px solid #ffc107; background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); position: relative; overflow: hidden;">
+                                <div style="position: absolute; top: -10px; left: 20%; font-size: 2rem; opacity: 0.3;">🙂</div>
+                                <div style="position: absolute; bottom: -10px; right: 15%; font-size: 2.5rem; opacity: 0.3;">🌟</div>
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title text-warning fw-bold">${fb.name}</h5>
+                                    <p class="card-text text-muted">${fb.fb}</p>    
+                                    <small class="text-warning"><i class="bi bi-hand-thumbs-up"></i> Neutral Feedback</small>
+                                </div>
+                            </div>
+                            `;
+                        }
+                        else if(fb.emojivalue=="3"){
+                            feedbackEntry = `
+                            <div class="card mb-3 shadow-lg" style="border-radius: 15px; border-left: 5px solid #ffc107; background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); position: relative; overflow: hidden;">
+                                <div style="position: absolute; top: -10px; left: 20%; font-size: 2rem; opacity: 0.3;">😐</div>
+                                <div style="position: absolute; bottom: -10px; right: 15%; font-size: 2.5rem; opacity: 0.3;">🌈</div>
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title text-warning fw-bold">${fb.name}</h5>
+                                    <p class="card-text text-muted">${fb.fb}</p>
+                                    <small class="text-warning"><i class="bi bi-hand-thumbs-up"></i> Average Feedback</small>
+                                </div>
+                            </div>`
+                        }
+                        else if(fb.emojivalue=="4"){
+                            feedbackEntry = `
+                            <div class="card mb-3 shadow-lg" style="border-radius: 15px; border-left: 5px solid #dc3545; background: linear-gradient(135deg, #fff1f0 0%, #ffdddd 100%); position: relative; overflow: hidden;">
+                                <div style="position: absolute; top: -10px; left: 20%; font-size: 2rem; opacity: 0.3;">😞</div>
+                                <div style="position: absolute; bottom: -10px; right: 15%; font-size: 2.5rem; opacity: 0.3;">💔</div>
+                                <div class="card-body position-relative">
+                                    <h5 class="card-title text-danger fw-bold">${fb.name}</h5>
+                                    <p class="card-text text-muted">${fb.fb}</p>
+                                    <small class="text-danger"><i class="bi bi-hand
+-thumbs-down-fill"></i> Negative Feedback</small>
+                                </div>
+                            </div>`;
+                        }
+                        $('#feedbackContainer').append(feedbackEntry);
+                    });
+                },
+                error: function (error) {
+                    console.error("Error fetching feedbacks:", error);
+                }
+            });
+            }
+            fetchFeedbacks();
+            setInterval(fetchFeedbacks, 1000);
+        });
+    </script>
+}

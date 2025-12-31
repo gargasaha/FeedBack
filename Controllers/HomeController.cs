@@ -33,11 +33,28 @@ public class HomeController : Controller
         Console.WriteLine(f);
         return RedirectToAction("FeedBack");
     }
-    public IActionResult Privacy()
+    [HttpGet]
+    public IActionResult Show()
     {
+        ViewData["Mode"]=1;
         return View();
     }
-
+    [HttpPost]
+    public IActionResult ListFeedback(string year)
+    {
+        ViewData["Mode"]=2;
+        ViewData["Year"]=year;
+        return View("Show");
+    }
+    [HttpGet]
+    public async Task<JsonResult> GetFeedbacks(string year)
+    {
+        // Console.WriteLine(year);
+        var feedbacks = await fBService.getFeedbackByYear(year);
+        // Console.WriteLine("ran");
+        return Json(feedbacks);
+    }
+    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

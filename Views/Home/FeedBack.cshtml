@@ -27,7 +27,7 @@
                         <div class="mb-4">
                             <label for="email" class="form-label fw-bold mb-2">✉️ Your Email</label>
                             <input type="email" asp-for="Email" class="form-control form-control-lg" id="email" 
-                                   placeholder="Enter your email" required 
+                                   placeholder="Enter your email"
                                    style="border-radius: 10px; border: 2px solid #e9ecef; padding: 12px 18px;">
                         </div>
 
@@ -83,7 +83,7 @@
 <script>
     let selectedRating = null;
     function chk(){
-        if(document.getElementById('name').value=="" || document.getElementById('email').value=="" || document.getElementById('message').value=="" || selectedRating==null){
+        if(document.getElementById('name').value=="" || document.getElementById('message').value=="" || selectedRating==null){
             alert("Please fill all the fields and select a rating before submitting.");
             event.preventDefault();
         }
