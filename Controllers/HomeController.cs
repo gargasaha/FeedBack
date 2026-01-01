@@ -55,6 +55,17 @@ public class HomeController : Controller
         return Json(feedbacks);
     }
     
+    [HttpGet]
+    public async Task<JsonResult> GetTopPerforming(string year){
+        var topPerforming=await fBService.GetCountGroup(year);
+        return Json(topPerforming);
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> DeleteFeedback(int id){
+        bool result=await fBService.DeleteFeedbackById(id);
+        return Json(new { success = result });
+    }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

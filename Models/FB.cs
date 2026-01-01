@@ -5,6 +5,8 @@ namespace FeedBack.Models
 {
     public class FB
     {
+        
+        public int id { get; set; }
         [MaxLength(100)]
         public string ?Name { get; set; }
         

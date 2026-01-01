@@ -22,6 +22,11 @@ namespace FeedBack.Services
                 throw new InvalidOperationException("Could not open database connection.", ex);
             }
         }
+        public void Dispose()
+        {
+            _connection.Close();
+            _connection.Dispose();
+        }
         public async Task<bool> SaveFeedback(Models.FB feedback)
         {
             string query = "INSERT INTO [FeedBack].[dbo].[FB] VALUES (@Name, @Email, @Fb, @Emojivalue,@CreatedAt)";
@@ -55,6 +60,7 @@ namespace FeedBack.Services
                 {
                     Models.FB fb = new Models.FB
                     {
+                        id = Convert.ToInt32(sqlDataReader["id"]),
                         Name = sqlDataReader["Name"] as string,
                         Email = sqlDataReader["Email"] as string,
                         Fb = sqlDataReader["Fb"] as string,
@@ -70,5 +76,41 @@ namespace FeedBack.Services
             }
             return feedbacks;
         }
+        public async Task<List<CountGroup>> GetCountGroup(string year){
+            string query="SELECT Emojivalue, COUNT(*) AS Total FROM [FeedBack].[dbo].[FB] WHERE YEAR(CreatedDate)=@Year GROUP BY Emojivalue order by count(*) DESC";
+            List<CountGroup> countGroups=new List<CountGroup>();
+            _command=new SqlCommand(query,_connection);
+            _command.Parameters.AddWithValue("@Year", year);
+            try
+            {
+                sqlDataReader=_command.ExecuteReaderAsync().Result;
+                while(sqlDataReader.Read()){
+                    CountGroup cg=new CountGroup{
+                        EmojiValue=sqlDataReader["Emojivalue"] as string,
+                        Total=Convert.ToInt32(sqlDataReader["Total"])
+                    };
+                    countGroups.Add(cg);
+                }
+                sqlDataReader.Close();
+            }
+            catch(Exception ex){
+                Console.WriteLine("Error retrieving count groups: "+ex.Message);    
+            }
+            return countGroups;
+        }
+        public Task<bool> DeleteFeedbackById(int id){
+            string query="DELETE FROM [FeedBack].[dbo].[FB] WHERE id=@Id";
+            _command=new SqlCommand(query,_connection);
+            _command.Parameters.AddWithValue("@Id",id);
+            try{
+                _command.ExecuteNonQuery();
+            }
+            catch(Exception ex){
+                Console.WriteLine("Error deleting feedback: "+ex.Message);
+                return Task.FromResult(false);
+            }
+            return Task.FromResult(true);
+        }
+        
     }
 }
