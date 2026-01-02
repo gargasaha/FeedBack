@@ -15,7 +15,7 @@
 
                 <div class="card-body p-5">
                     <form id="feedbackForm" asp-controller="Home" asp-action="FeedBack" method="post">
-                        <!-- Name Field -->
+                        
                         <div class="mb-4">
                             <label for="name" class="form-label fw-bold mb-2">👤 Your Name</label>
                             <input type="text" asp-for="Name" class="form-control form-control-lg" id="name" 
@@ -23,7 +23,7 @@
                                    style="border-radius: 10px; border: 2px solid #e9ecef; padding: 12px 18px;">
                         </div>
 
-                        <!-- Email Field -->
+                       
                         <div class="mb-4">
                             <label for="email" class="form-label fw-bold mb-2">✉️ Your Email</label>
                             <input type="email" asp-for="Email" class="form-control form-control-lg" id="email" 
@@ -31,7 +31,7 @@
                                    style="border-radius: 10px; border: 2px solid #e9ecef; padding: 12px 18px;">
                         </div>
 
-                        <!-- Feedback Textarea -->
+                        
                         <div class="mb-4">
                             <label for="message" class="form-label fw-bold mb-2">💬 Your Feedback</label>
                             <textarea asp-for="Fb" class="form-control form-control-lg" id="message" rows="4" 
@@ -39,7 +39,7 @@
                                       style="border-radius: 10px; border: 2px solid #e9ecef; padding: 12px 18px; resize: none;"></textarea>
                         </div>
 
-                        <!-- Rating Selection -->
+                       
                         <label class="form-label fw-bold d-block mb-4">⭐ How was your experience?</label>
                         
                         <div class="rating-container">
@@ -70,7 +70,8 @@
 
                         <button type="submit" class="btn btn-lg w-100 mt-5" 
                                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 14px;" 
-                                onclick="chk();">
+                                onclick="chk();"
+                                id="sbmt">
                             📤 Submit Feedback
                         </button>
                     </form>
@@ -83,6 +84,8 @@
 <script>
     let selectedRating = null;
     function chk(){
+        @* document.getElementById('sbmt').innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Submitting...';
+        document.getElementById('sbmt').disabled = true; *@
         if(document.getElementById('name').value=="" || document.getElementById('message').value=="" || selectedRating==null){
             alert("Please fill all the fields and select a rating before submitting.");
             event.preventDefault();
@@ -117,7 +120,6 @@
         gap: 12px;
         margin-bottom: 24px;
     }
-
     .feedback-btn {
         border: 2px solid #e9ecef;
         background: #f8f9fa;
