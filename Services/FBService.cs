@@ -13,14 +13,7 @@ namespace FeedBack.Services
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             _connection = new SqlConnection(_connectionString);
-            try
-            {
-                _connection.Open();   
-            }
-            catch(Exception ex)
-            {
-                throw new InvalidOperationException("Could not open database connection.", ex);
-            }
+            
         }
         public void Dispose()
         {
@@ -29,6 +22,14 @@ namespace FeedBack.Services
         }
         public async Task<bool> SaveFeedback(Models.FB feedback)
         {
+            try
+            {
+                await _connection.OpenAsync();   
+            }
+            catch(Exception ex)
+            {
+                throw new InvalidOperationException("Could not open database connection.", ex);
+            }
             string query = "INSERT INTO [FeedBack].[dbo].[FB] VALUES (@Name, @Email, @Fb, @Emojivalue,@CreatedAt)";
             _command=new SqlCommand(query,_connection);
             _command.Parameters.AddWithValue("@Name", feedback.Name ?? (object)DBNull.Value);
@@ -45,10 +46,19 @@ namespace FeedBack.Services
                 Console.WriteLine("Error saving feedback: " + ex.Message);
                 return false;
             }
+            await _connection.CloseAsync();
             return true;
         }
         public async Task<List<Models.FB>> getFeedbackByYear(string year)
         {
+            try
+            {
+                await _connection.OpenAsync();   
+            }
+            catch(Exception ex)
+            {
+                throw new InvalidOperationException("Could not open database connection.", ex);
+            }
             List<Models.FB> feedbacks = new List<Models.FB>();
             string query = "SELECT * FROM [FeedBack].[dbo].[FB] WHERE YEAR(CreatedDate) = @Year ORDER BY CreatedDate DESC";
             _command=new SqlCommand(query,_connection);
@@ -74,9 +84,18 @@ namespace FeedBack.Services
             {
                 Console.WriteLine("Error retrieving feedback: " + ex.Message);
             }
+            await _connection.CloseAsync();
             return feedbacks;
         }
         public async Task<List<CountGroup>> GetCountGroup(string year){
+                try
+                {
+                    await _connection.OpenAsync();   
+                }
+                catch(Exception ex)
+                {
+                    throw new InvalidOperationException("Could not open database connection.", ex);
+                }
             string query="SELECT Emojivalue, COUNT(*) AS Total FROM [FeedBack].[dbo].[FB] WHERE YEAR(CreatedDate)=@Year GROUP BY Emojivalue order by count(*) DESC";
             List<CountGroup> countGroups=new List<CountGroup>();
             _command=new SqlCommand(query,_connection);
@@ -96,20 +115,30 @@ namespace FeedBack.Services
             catch(Exception ex){
                 Console.WriteLine("Error retrieving count groups: "+ex.Message);    
             }
+            await _connection.CloseAsync();
             return countGroups;
         }
-        public Task<bool> DeleteFeedbackById(int id){
+        public async Task<bool> DeleteFeedbackById(int id){
+            try
+            {
+                await _connection.OpenAsync();   
+            }
+            catch(Exception ex)
+            {
+                throw new InvalidOperationException("Could not open database connection.", ex);
+            }
             string query="DELETE FROM [FeedBack].[dbo].[FB] WHERE id=@Id";
             _command=new SqlCommand(query,_connection);
             _command.Parameters.AddWithValue("@Id",id);
             try{
-                _command.ExecuteNonQuery();
+                await _command.ExecuteNonQueryAsync();
             }
             catch(Exception ex){
                 Console.WriteLine("Error deleting feedback: "+ex.Message);
-                return Task.FromResult(false);
+                return false;
             }
-            return Task.FromResult(true);
+            await _connection.CloseAsync();
+            return true;
         }
         
     }

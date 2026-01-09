@@ -31,7 +31,10 @@ public class HomeController : Controller
     public async Task<IActionResult> FeedBack(Models.FB obj)
     {
         bool f = await fBService.SaveFeedback(obj);
-        Console.WriteLine(f);
+        if(obj.Email==null || obj.Email=="")
+        {
+            return RedirectToAction("FeedBack");
+        }
         try
         {
             using (MailMessage m = new MailMessage())
